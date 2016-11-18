@@ -28,11 +28,12 @@ Game.Symbolic.prototype = {
     create: function() {
 
       this.uid = firebase.auth().currentUser.uid;
-      this.db_ref = firebase.database().ref('settings').child(this.uid).child('symbolic');
       this.task = 'symbolic';
+      this.db_ref = firebase.database().ref('settings').child(this.uid).child(this.task);
+      
       //CREATE TRIAL DATA LOGGER
       this.state = 'instructions';
-      this.logger = new Logger('symbolic', this);
+      this.logger = new Logger(this.task, this);
       //set up the timing
       this.game.time.advancedTiming = true;
       this.fps = this.game.time.desiredFps;
@@ -55,12 +56,13 @@ Game.Symbolic.prototype = {
 
       var cross = this.game.add.text(this.game.world.centerX,
                   this.game.world.centerY, '*', text_attrib);
+      cross.anchor.set(0.5, 0.5);
 
+	    
       this.stimuli = this.game.add.group();
       this.stimuli.add(n1_button);
       this.stimuli.add(n2_button);
 
-      cross.anchor.set(0.5, 0.5);
 
       //make everything invisible to start with
       this.stimuli.visible = false;
@@ -132,7 +134,7 @@ Game.Symbolic.prototype = {
           this.grader.grade('NA', this.CRESP, 'NA');
         }
         else if (arguments[0] == 'stimulus') {
-          F.onDown.addOnce(this.n1_down, this); //TODO - make these one-shots to avoid button mashing
+          F.onDown.addOnce(this.n1_down, this);
           J.onDown.addOnce(this.n2_down, this);
 
           n1_button.children[0].setText(this.ns[0]); //TODO - make a proper extension of the button object
